@@ -107,68 +107,28 @@
         };
 
         // 4. Escribir en Firestore (colección 'propiedades')
-        // === CÓDIGO ACTUALIZADO: CARGAR PROPIEDADES (MINI STEP 8.1) ===
+        db.collection("propiedades").add(nuevaPropiedad)
+            .then(() => {
+                messageDisplay.textContent = "¡Propiedad añadida con éxito! Recargando listado...";
+                messageDisplay.style.color = 'green';
+                
+                // 5. Limpiar formulario
+                document.getElementById('new-titulo').value = '';
+                document.getElementById('new-precio').value = '';
+                document.getElementById('new-ciudad').value = '';
+                document.getElementById('new-imagen').value = '';
 
-// Función central para cargar propiedades (acepta filtro opcional)
-function cargarPropiedades(filtroCiudad = null) {
-    const contenedor = document.getElementById('propiedades-container');
-    contenedor.innerHTML = '<p style="text-align: center;">Buscando propiedades...</p>'; // Mensaje de carga
+                // 6. Recargar listado (la función principal de lectura)
+                setTimeout(() => {
+                    location.reload(); // La forma más simple de actualizar la lista
+                }, 1500); // Esperar 1.5 segundos
 
-    let coleccion = db.collection("propiedades");
-
-    // 1. Aplicar el filtro si se proporciona una ciudad
-    if (filtroCiudad && filtroCiudad.trim() !== "") {
-        // Firestore requiere que el campo 'ciudad' sea exacto para la búsqueda
-        coleccion = coleccion.where("ciudad", "==", filtroCiudad.trim());
-    }
-
-    coleccion.get().then((querySnapshot) => {
-        let htmlContent = ''; 
-
-        if (querySnapshot.empty) {
-            contenedor.innerHTML = `<h1 style="text-align: center;">No se encontraron propiedades en ${filtroCiudad ? filtroCiudad : 'la base de datos'}.</h1>`;
-            return;
-        }
-
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            htmlContent += `
-                <div class="propiedad-card">
-                    <img src="${data.urlImagen}" alt="${data.titulo}">
-                    <div class="propiedad-details">
-                        <h2>${data.titulo}</h2>
-                        <p><strong>Ciudad:</strong> ${data.ciudad}</p>
-                        <p><strong>Precio:</strong> $${data.precio}</p>
-                    </div>
-                </div>
-            `;
-        });
-
-        contenedor.innerHTML = htmlContent;
-
-    }).catch((error) => {
-        console.error("Error al leer Firestore: ", error);
-        contenedor.innerHTML = "<h1>Error de conexión al obtener el listado.</h1>";
-    });
-}
-
-// 2. LISTENERS DE BOTONES
-
-// Ejecuta la búsqueda al hacer clic en 'Buscar'
-document.getElementById('btn-buscar').addEventListener('click', () => {
-    const ciudad = document.getElementById('filtro-ciudad').value;
-    cargarPropiedades(ciudad);
-});
-
-// Muestra todo al hacer clic en 'Mostrar Todas'
-document.getElementById('btn-mostrar-todo').addEventListener('click', () => {
-    document.getElementById('filtro-ciudad').value = ''; // Limpiar el input
-    cargarPropiedades(); // Llamar sin filtro
-});
-
-// Iniciar la carga al principio
-cargarPropiedades(); 
-// --- (Mantener el resto del código del MINI STEP 7.2) ---
+            })
+            .catch((error) => {
+                console.error("Error al añadir documento: ", error);
+                messageDisplay.textContent = "Error al añadir propiedad. Revisa la consola y las reglas de Firebase.";
+                messageDisplay.style.color = 'red';
+            });
     }
 
     // [AQUÍ VA LA FUNCIÓN DE LECTURA DE PROPIEDADES QUE YA TENÍAS]
