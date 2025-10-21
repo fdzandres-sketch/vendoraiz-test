@@ -1,0 +1,12 @@
+# CONDICIONES QUE DEBE TENER el archivo index.html
+Firebase Config     
+    apiKey: "AIzaSyAKXariRWtQooeoENvDLSEPJJGYE8eQ7nM",
+    authDomain: "marketplace-inmobiliario-beta.firebaseapp.com",
+    projectId: "marketplace-inmobiliario-beta",
+    storageBucket: "marketplace-inmobiliario-beta.firebasestorage.app",
+    messagingSenderId: "639523806499",
+    appId: "1:639523806499:web:5b91af6866cba34ae28096",
+    measurementId: "G-XVVLXJEYK0"
+
+# PARA SUBIR ULTIMOS CAMBIOS
+firebase deploy --only hosting
